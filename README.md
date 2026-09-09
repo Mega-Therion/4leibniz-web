@@ -164,6 +164,17 @@ the dynamic Open Graph image.
   Knowledge Truth and Ideas, the Spinoza and Malebranche pieces, the
   Cartesian essays, and more. Scanned-source OCR; correction passes
   scheduled.
+- **Correspondence with Arnauld** (1686–1688) — Montgomery's translation,
+  23 anchored letters; OCR from the Open Court scan.
+- **Five Letters to Samuel Clarke** (1715–1716) — Leibniz's five papers of
+  the last controversy, from Duncan. Clarke's replies: scheduled (the 1717
+  collection's facing-page layout needs a dedicated extraction pass).
+- **New Essays on Human Understanding** (1704) — Langley's translation is
+  sourced and staged; its chapter OCR needs a tolerant extraction pass
+  before inclusion.
+- **Bilingual reader**: the Monadology now carries the French original
+  (La Monadologie, 1909, Gutenberg #17641) aligned paragraph-by-paragraph
+  — the reader's Original toggle shows FR/EN side-by-side.
 
 Both were machine-extracted from digitized scans and lightly proofed; each work
 page states exactly what the text is and what remains provisional. These seed
