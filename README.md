@@ -153,9 +153,17 @@ the dynamic Open Graph image.
 - **The Monadology** (1714) — public-domain Latta translation (Oxford, 1898),
   90 anchored paragraphs.
 - **Theodicy** (1710) — E. M. Huggard translation, Project Gutenberg eBook
-  #17147 (US public domain), 513 anchored sections: Preface, Preliminary
-  Dissertation (§D1–§D87), Parts One–Three (§1–§417), and the Summary of the
-  Controversy (§S1–§S8).
+  #17147 (US public domain), 552 anchored sections: Preface, Preliminary
+  Dissertation (§D1–§D87), Parts One–Three (§1–§417), the Summary of the
+  Controversy (§S1–§S8), and both appendices (§R1–§R12 on Hobbes; §O1–§O27
+  on King).
+- **The Duncan corpus** (1679–1715) — 32 complete shorter works from G. M.
+  Duncan, The Philosophical Works of Leibnitz (1908), OCR from the
+  archive.org scan: the New System and its three explanations, On the
+  Ultimate Origin of Things, Principles of Nature and Grace, Thoughts on
+  Knowledge Truth and Ideas, the Spinoza and Malebranche pieces, the
+  Cartesian essays, and more. Scanned-source OCR; correction passes
+  scheduled.
 
 Both were machine-extracted from digitized scans and lightly proofed; each work
 page states exactly what the text is and what remains provisional. These seed

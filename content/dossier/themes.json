@@ -14,7 +14,9 @@
     "label": "Monads",
     "description": "Simple substances — windowless, world-mirroring, indivisible — as the elements of things.",
     "works": [
-      "monadology"
+      "monadology",
+      "principles-of-nature-and-grace",
+      "new-system"
     ]
   },
   {
@@ -24,7 +26,10 @@
     "works": [
       "discourse-on-metaphysics",
       "monadology",
-      "theodicy"
+      "theodicy",
+      "on-the-ultimate-origin",
+      "abridgment-of-theodicy",
+      "principles-of-nature-and-grace"
     ]
   },
   {
@@ -49,7 +54,12 @@
     "description": "Pre-established harmony: synchronized substances without interaction.",
     "works": [
       "discourse-on-metaphysics",
-      "monadology"
+      "monadology",
+      "new-system",
+      "explanation-new-system",
+      "second-explanation-new-system",
+      "third-explanation-new-system",
+      "on-nature-in-itself"
     ]
   },
   {
@@ -73,7 +83,8 @@
     "label": "Freedom & Necessity",
     "description": "Moral necessity versus metaphysical necessity; grace, contingency, and the famous eight objections answered.",
     "works": [
-      "theodicy"
+      "theodicy",
+      "necessity-and-contingency"
     ]
   }
 ]
