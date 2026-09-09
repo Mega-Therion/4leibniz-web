@@ -152,6 +152,10 @@ the dynamic Open Graph image.
   (Open Court, 1908), 37 anchored sections.
 - **The Monadology** (1714) — public-domain Latta translation (Oxford, 1898),
   90 anchored paragraphs.
+- **Theodicy** (1710) — E. M. Huggard translation, Project Gutenberg eBook
+  #17147 (US public domain), 513 anchored sections: Preface, Preliminary
+  Dissertation (§D1–§D87), Parts One–Three (§1–§417), and the Summary of the
+  Controversy (§S1–§S8).
 
 Both were machine-extracted from digitized scans and lightly proofed; each work
 page states exactly what the text is and what remains provisional. These seed

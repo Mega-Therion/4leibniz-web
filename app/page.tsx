@@ -68,7 +68,7 @@ export default async function HomePage() {
         description="Every work is sectioned, anchored, and indexed for retrieval. Begin with the two pillars of the mature system."
         className="mt-s16"
       >
-        <div className="grid gap-s6 sm:grid-cols-2">
+        <div className="grid gap-s6 sm:grid-cols-2 lg:grid-cols-3">
           {featured.map((w) => (
             <WorkCard key={w.slug} work={w as unknown as ArchiveWork} themes={themeLabels} />
           ))}

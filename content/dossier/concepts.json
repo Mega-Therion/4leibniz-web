@@ -34,7 +34,8 @@
     "definition": "Among infinitely many possible worlds present to God's understanding, God wills into existence the one that is simplest in means yet richest in effects. Divine choice is not arbitrary: goodness and order are real principles, so God's selection follows from the nature of things — the foundation of Leibniz's optimism and his theodicy.",
     "relatedWorks": [
       "discourse-on-metaphysics",
-      "monadology"
+      "monadology",
+      "theodicy"
     ],
     "relatedConcepts": [
       "sufficient-reason",
@@ -48,7 +49,8 @@
     "definition": "The principle that every fact, every event, every existence has a sufficient reason for being as it is rather than otherwise. For contingent truths the full reason ultimately lies outside the series of created things, in God's choice of the best — the principle's most famous use closes the Monadology's cosmological argument.",
     "relatedWorks": [
       "monadology",
-      "discourse-on-metaphysics"
+      "discourse-on-metaphysics",
+      "theodicy"
     ],
     "relatedConcepts": [
       "principle-of-the-best",
@@ -134,7 +136,8 @@
     "definition": "The claim that God, constrained by the essences of things, actualizes the greatest possible net good: a world with evil and disorder can still be the best achievable one. Leibniz defended this publicly in the Théodicée (1710) against Pierre Bayle, arguing that to demand a world without any evil is to demand a different mathematics of goods.",
     "relatedWorks": [
       "discourse-on-metaphysics",
-      "monadology"
+      "monadology",
+      "theodicy"
     ],
     "relatedConcepts": [
       "principle-of-the-best",
@@ -151,6 +154,19 @@
     ],
     "relatedConcepts": [
       "monad"
+    ]
+  },
+  {
+    "slug": "freedom-and-necessity",
+    "term": "Freedom and necessity",
+    "short": "To be bound by the consideration of good is to be free, not compelled.",
+    "definition": "Leibniz's central move against Bayle: God and humans are morally, not metaphysically, necessitated. Wisdom's choice is certain without being compulsory — the decrees of God incline without necessitating, which preserves both divine justice and human responsibility.",
+    "relatedWorks": [
+      "theodicy"
+    ],
+    "relatedConcepts": [
+      "optimism-and-theodicy",
+      "sufficient-reason"
     ]
   }
 ]
