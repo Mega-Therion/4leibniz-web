@@ -8,6 +8,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '',
     '/works',
     '/guide',
+    '/catalog',
     '/leibniz',
     '/leibniz/timeline',
     '/leibniz/concepts',

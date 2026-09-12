@@ -37,6 +37,15 @@ export default async function GuidePage({ searchParams }: PageProps) {
         workTitle={scopedWork?.title ?? null}
         initialInput={searchParams.q}
       />
+
+      <p className="mt-s8 text-sm text-text3">
+        The guide cites the{' '}
+        <a href="/catalog" className="text-gold1 underline underline-offset-4 hover:text-gold2">
+          proof-grounded catalog
+        </a>{' '}
+        when a question touches a formalized claim — browse it directly to see exactly
+        what is proved, conditional, or open.
+      </p>
     </div>
   );
 }

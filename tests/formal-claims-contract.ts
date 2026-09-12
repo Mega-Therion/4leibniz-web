@@ -16,9 +16,17 @@ import {
   catalog,
   createCatalogView,
   CATALOG_SCHEMA_VERSION,
+  listClaims,
+  statusLabel,
   type FormalClaim,
   type FormalClaimsCatalog,
 } from '@/lib/formal-claims';
+import {
+  catalogStats,
+  groupByModule,
+  statusChipVariant,
+  toClaimCardModel,
+} from '@/lib/formal-claims/presentation';
 import fixtureJson from './fixtures/formal-claims/formal-claims-v1.fixture.json';
 
 let failures = 0;
@@ -139,6 +147,55 @@ function gateSemantics(name: string, cat: FormalClaimsCatalog) {
 }
 
 console.log('formal-claims consumer contract tests');
+// ---------------------------------------------------------------------------
+// v1.1 presentation layer: grouping, stats, and card models must stay honest.
+// ---------------------------------------------------------------------------
+{
+  const claims = catalog.claims;
+  const groups = groupByModule(claims);
+
+  check('presentation: grouping covers every claim exactly once', () => {
+    const grouped = groups.flatMap((g) => g.claims.map((c) => c.claim_id));
+    assert.equal(grouped.length, claims.length);
+    assert.equal(new Set(grouped).size, claims.length);
+    for (const g of groups) {
+      for (const c of g.claims) assert.equal(c.module, g.module);
+    }
+  });
+
+  check('presentation: stats match the catalog', () => {
+    const stats = catalogStats(claims);
+    assert.equal(stats.total, claims.length);
+    const recount = { proved: 0, conditional: 0, informal: 0, open_problem: 0 };
+    for (const c of claims) recount[c.status]++;
+    assert.deepEqual(
+      { proved: stats.proved, conditional: stats.conditional, informal: stats.informal, open_problem: stats.open_problem },
+      recount,
+    );
+  });
+
+  check('presentation: card models never invent verified provenance', () => {
+    for (const c of claims) {
+      const card = toClaimCardModel(c, statusLabel);
+      assert.equal(card.claim_id, c.claim_id);
+      assert.equal(card.status_label, statusLabel(c.status));
+      if (c.status === 'proved') {
+        assert.ok(card.verified_provenance, 'proved claim must carry provenance');
+        assert.match(card.verified_provenance.commit, COMMIT_RE);
+      } else {
+        assert.equal(card.verified_provenance, null, `${c.claim_id} must not carry provenance`);
+      }
+    }
+  });
+
+  check('presentation: chip variants stay honest (proved=gold only)', () => {
+    assert.equal(statusChipVariant('proved'), 'gold');
+    assert.notEqual(statusChipVariant('conditional'), 'gold');
+    assert.notEqual(statusChipVariant('open_problem'), 'gold');
+    assert.notEqual(statusChipVariant('informal'), 'gold');
+  });
+}
+
 catalogInvariants('packaged snapshot', catalog);
 gateSemantics('packaged snapshot', catalog);
 catalogInvariants('fixture catalog', fixtureJson as unknown as FormalClaimsCatalog);
