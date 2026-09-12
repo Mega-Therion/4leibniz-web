@@ -1,199 +1,49 @@
-# 4Leibniz
+# 4leibniz-web
 
-**A living archive of Leibniz — transcribed, translated, searchable, guided.**
+A living scholarly archive of Gottfried Wilhelm Leibniz — transcribed, translated, searchable, and guided. Next.js scholarly edition with grounded AI guidance.
 
-4Leibniz is a public scholarly archive and AI-guided reading environment for the works of Gottfried Wilhelm Leibniz. It pairs a citation-aware digital edition of the corpus with a retrieval-grounded AI guide that answers from the texts, shows its sources, and admits when the evidence runs out.
+![Scholarly Retrieval and Citation Flow](public/visuals/scholarly-retrieval-flow.svg)
 
-It is not a chatbot with branding. It is a reading instrument.
+## System Role & Consumer Boundary
 
-- **Archive** — works with stable section anchors (`/works/<slug>#<anchor>`), metadata, provenance, and editorial notes.
-- **Guide** — retrieval-first AI (`/guide`): every answer carries an evidence mode (`corpus` / `dossier` / `mixed` / `insufficient_evidence`) and a citations drawer that deep-links to the exact section.
-- **Dossier** — structured editorial background (`/leibniz`): biography, timeline, concept glossary, correspondents, and a theme–work relation map.
-- **Search & Ingestion** — semantic archive search and a full corpus ingestion pipeline (chunking, embedding, pgvector indexing).
+`4leibniz-web` is the primary scholarly and reading interface for the 4Leibniz project. It provides paragraph-anchored transcriptions, Latin/French-to-English translations, and a citation-grounded retrieval interface.
 
-## Stack
+### Strict Epistemic Invariant
+- **Consumer Only**: This web application is a downstream consumer of theorem data from the canonical `4Leibniz` repository (`Mega-Therion/4Leibniz`).
+- **No Independent Truth Claims**: The web interface does **not** evaluate proofs, compile Lean, or award `proved` badges on its own authority.
+- **Verification vs. Explanation**: A retrieved passage or conversational response provides scholarly context and explanation; formal verification status is shown only when accompanied by an immutable commit-pinned claim record emitted by `4Leibniz` (#11).
 
-| Layer | Tool |
-| --- | --- |
-| Framework | Next.js 14 (App Router, TypeScript) |
-| Styling | Tailwind CSS + CSS-variable design tokens (obsidian / antique gold / violet) |
-| AI | Vercel AI SDK (streaming chat), Vercel AI Gateway (model-agnostic) |
-| Database | PostgreSQL + pgvector (Neon / Vercel Postgres) |
-| ORM | Drizzle ORM + drizzle-kit migrations |
-| QA | ESLint (next/core-web-vitals) + Prettier |
+## Active Integration Workstream
 
-## Project layout
+- **Upstream Contract (4Leibniz Issue #11)**: Consuming `artifacts/v1/formal-claims.json` via typed read-only routes (`/api/formal-claims`) to display verified theorem statuses and proof source locators.
+
+## Core Features
+
+- **Discourse on Metaphysics**: Complete 37-section edition anchored to the Montgomery 1908 critical text.
+- **Monadology**: Complete 90-paragraph edition anchored to Latta 1898.
+- **Scholarly Guide**: Retrieval-augmented reader interface backed by vector search and source citations.
+- **Biographical & Lexicon Explorer**: Interactive contextual glossary of Leibnizian terminology.
+
+## Architecture
 
 ```
-app/                    App Router routes (pages + API)
-  api/chat/             Streaming, retrieval-grounded guide endpoint
-  api/search/           Semantic archive search
-  api/ingest/reindex/   Protected full reindex (Bearer INGEST_SECRET)
-  works/[slug]/         The work reader (crown jewel)
-  leibniz/              Dossier: biography, timeline, concepts, correspondents
-  opengraph-image.tsx   Dynamic OG image (next/og)
-components/             SiteHeader, HeroObservatory, GuidePanel, WorkCard, …
-content/
-  works/<slug>/         meta.json · text.en.md · sections.json  (canonical source)
-  dossier/              biography.md · timeline.json · concepts.json · correspondents.json · themes.json
-lib/
-  ai/                   Provider config (AI Gateway) + system prompt
-  db/                   Drizzle schema + lazy client
-  ingest/               Loader, section-aware chunker, ingestion pipeline
-  retrieval/            Embedding + pgvector retrieval (scoped → archive → dossier)
-scripts/                ingest.ts · seed-dossier.ts
-drizzle/                Generated SQL migrations (incl. pgvector + HNSW)
-styles/                 globals.css — the design token system
+User Query ──► /api/search / /api/chat ──► pgvector Retrieval ──► Grounded Text + Citation Links
+                     │
+                     ▼
+         Read-Only Formal Catalog
+       (artifacts/v1/formal-claims.json) ──► Verified / Conditional Badge
 ```
 
-## Content model
-
-The repository is the canonical source of truth; Postgres is the retrieval index.
-
-- `content/works/<slug>/meta.json` — title, dates, status, language, themes, provenance, editorial notes.
-- `content/works/<slug>/text.en.md` — the edition text. Section headings carry stable anchors:
-  - `## §IV — That love for God demands…` (Discourse-style)
-  - `## ¶12` (Monadology-style)
-- `content/works/<slug>/sections.json` — generated section index (tooling-friendly).
-- `content/dossier/*` — editorial background, clearly labeled and never mixed into corpus citations.
-
-Adding a work = adding a folder + running ingestion. No code changes.
-
-## Setup
+## Local Development
 
 ```bash
-npm install
-cp .env.example .env   # fill in POSTGRES_URL and AI_GATEWAY_API_KEY
+# Install dependencies
+npm ci
+
+# Run development server
+npm run dev
+
+# Run typecheck and tests
+npm run typecheck
+npm test
 ```
-
-### Environment variables
-
-| Variable | Required | Purpose |
-| --- | --- | --- |
-| `POSTGRES_URL` | yes | Postgres connection string (Neon / Vercel Postgres) with pgvector enabled |
-| `AI_GATEWAY_API_KEY` | yes | Vercel AI Gateway key |
-| `CHAT_MODEL` | no | Gateway model id (default `openai/gpt-4o-mini`) |
-| `EMBEDDING_MODEL` | no | Gateway model id (default `openai/text-embedding-3-small`, 1536 dims) |
-| `EMBEDDING_DIMENSIONS` | no | Must match the schema vector dimension (1536) |
-| `AI_GATEWAY_BASE_URL` | no | Defaults to `https://ai-gateway.vercel.sh/v1` |
-| `RETRIEVAL_LIMIT` / `WORK_SCOPE_LIMIT` | no | Retrieval tuning (6 / 4) |
-| `INGEST_SECRET` | no | Enables the protected `/api/ingest/reindex` endpoint |
-| `NEXT_PUBLIC_SITE_URL` | no | Canonical URL for SEO/sitemap (set in production) |
-
-### Database
-
-pgvector must be enabled once on the database:
-
-```sql
-CREATE EXTENSION IF NOT EXISTS vector;
-```
-
-(The generated migration also attempts this; on managed Postgres where you lack
-superuser rights, enable it from the provider dashboard first.)
-
-```bash
-npm run db:generate   # regenerate SQL from lib/db/schema.ts (already committed)
-npm run db:migrate     # apply migrations
-```
-
-### Ingestion (chunking → embedding → indexing)
-
-```bash
-npm run ingest         # full reindex: works, sections, chunks, dossier
-npm run seed:dossier   # dossier only
-```
-
-Or, in production, the protected endpoint:
-
-```bash
-curl -X POST https://<your-domain>/api/ingest/reindex \
-     -H "Authorization: Bearer $INGEST_SECRET"
-```
-
-### Local development
-
-```bash
-npm run dev      # http://localhost:3000
-npm run build    # production build (works without a database — pages are static)
-npm run lint     # eslint
-npm run format   # prettier
-```
-
-The site builds and serves fully without `POSTGRES_URL` — the guide and search
-return a clear "not configured" state; everything else is static.
-
-## Deploying to Vercel
-
-1. Push this repository to GitHub.
-2. In Vercel: **New Project → import the repo** (framework auto-detected as Next.js).
-3. Add env vars: `POSTGRES_URL`, `AI_GATEWAY_API_KEY`, `INGEST_SECRET`, `NEXT_PUBLIC_SITE_URL`.
-   Use a Neon or Vercel Postgres database with pgvector enabled.
-4. Deploy, then run `npm run db:migrate` and `npm run ingest` locally against the
-   production `POSTGRES_URL` (or call the reindex endpoint once).
-
-The app is Node-runtime for the API routes and uses the edge runtime only for
-the dynamic Open Graph image.
-
-## AI guide behavior
-
-- Answers are composed **from retrieved evidence first**: scoped work chunks →
-  archive-wide chunks → editorial dossier entries.
-- Every response is labeled with a mode and carries structured sources:
-  `{ mode, sources: [{ title, slug, section, anchor, excerpt }], suggestedFollowups }`.
-- The system prompt forbids invented quotations, dates, and titles, requires
-  dossier evidence to be labeled editorial background, and demands plain
-  statements of uncertainty (`insufficient_evidence`) when retrieval is thin.
-- On a work page, "Ask the guide about this work" scopes retrieval to that
-  work first (`/guide?work=<slug>`).
-
-## Seed corpus (honest provenance)
-
-- **Discourse on Metaphysics** (1686) — public-domain Montgomery translation
-  (Open Court, 1908), 37 anchored sections.
-- **The Monadology** (1714) — public-domain Latta translation (Oxford, 1898),
-  90 anchored paragraphs.
-- **Theodicy** (1710) — E. M. Huggard translation, Project Gutenberg eBook
-  #17147 (US public domain), 552 anchored sections: Preface, Preliminary
-  Dissertation (§D1–§D87), Parts One–Three (§1–§417), the Summary of the
-  Controversy (§S1–§S8), and both appendices (§R1–§R12 on Hobbes; §O1–§O27
-  on King).
-- **The Duncan corpus** (1679–1715) — 32 complete shorter works from G. M.
-  Duncan, The Philosophical Works of Leibnitz (1908), OCR from the
-  archive.org scan: the New System and its three explanations, On the
-  Ultimate Origin of Things, Principles of Nature and Grace, Thoughts on
-  Knowledge Truth and Ideas, the Spinoza and Malebranche pieces, the
-  Cartesian essays, and more. Scanned-source OCR; correction passes
-  scheduled.
-- **Correspondence with Arnauld** (1686–1688) — Montgomery's translation,
-  23 anchored letters; OCR from the Open Court scan.
-- **Five Letters to Samuel Clarke** (1715–1716) — Leibniz's five papers of
-  the last controversy, from Duncan. Clarke's replies: scheduled (the 1717
-  collection's facing-page layout needs a dedicated extraction pass).
-- **New Essays on Human Understanding** (1704) — Langley's translation is
-  sourced and staged; its chapter OCR needs a tolerant extraction pass
-  before inclusion.
-- **Bilingual reader**: the Monadology now carries the French original
-  (La Monadologie, 1909, Gutenberg #17641) aligned paragraph-by-paragraph
-  — the reader's Original toggle shows FR/EN side-by-side.
-
-Both were machine-extracted from digitized scans and lightly proofed; each work
-page states exactly what the text is and what remains provisional. These seed
-editions exist to be replaced by the archive's own transcriptions and
-re-translations — anchors are permanent, so citations survive the upgrade.
-
-## Roadmap
-
-- French and Latin originals aligned section-by-section for side-by-side reading
-  (the reader UI already supports `text.orig.md`).
-- More works: New System (1695), the Arnauld correspondence, the Leibniz–Clarke letters, the Théodicée.
-- The archive's own re-translations replacing seed texts, in place.
-- Public guide sessions and shareable cited answers.
-
-## License
-
-- Leibniz's texts and the seed translations are in the **public domain**.
-- Editorial content, dossier entries, and this application: **© 2026 4Leibniz**.
-
----
-
-*Calculemus.*
