@@ -115,6 +115,8 @@ export interface GuideData {
   sources: GuideSource[];
   suggestedFollowups: string[];
   scope?: string | null;
+  /** Catalogued formal claims matched from the user's message (contract v1). */
+  formal_claims?: import('@/lib/formal-claims').ClaimDisplay[];
 }
 
 export interface SearchHit {

@@ -25,6 +25,18 @@ function renderSources(sources: GuideSource[]): string {
     .join('\n');
 }
 
+
+function renderFormalClaims(
+  claims: { claim_id: string; title: string; status_label: string; sourced_explanation: string; module: string }[],
+): string {
+  if (claims.length === 0) return '_(no catalogued formal claims matched this question)_';
+  return claims
+    .map((c) =>
+      `- [${c.status_label}] ${c.title} (${c.module}) — ${c.sourced_explanation}`,
+    )
+    .join('\n');
+}
+
 export function buildSystemPrompt(data: Omit<GuideData, 'suggestedFollowups'>): string {
   const scopeLine = data.scope
     ? `The reader is currently inside the work "${data.scope}". Prioritize sources from this work when they are relevant; widen to the rest of the archive only as needed.`
@@ -40,7 +52,14 @@ ${scopeLine}
 
 ${renderSources(data.sources)}
 
-Answer the reader's question grounded ONLY in the material above plus general reasoning you flag as synthesis. If a needed fact is not present above, mark it as an open question rather than guessing.`;
+## Formal claims (from the 4Leibniz proof-grounded catalog)
+
+${renderFormalClaims(data.formal_claims ?? [])}
+
+## Epistemic rules for formal claims
+
+- You may explain any formal claim, but you may say a claim is "formally verified" or "proved" ONLY when its verification label above says so (status "Formally verified (Lean)").
+- Sourced explanation is not proof: cite the claim's stated status and assumptions exactly as given. Conditional claims must mention what they depend on; open problems must never be described as established.`;
 }
 
 export function suggestedFollowups(mode: GuideData['mode'], workTitle?: string | null): string[] {

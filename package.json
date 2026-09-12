@@ -13,7 +13,8 @@
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "ingest": "tsx scripts/ingest.ts",
-    "seed:dossier": "tsx scripts/seed-dossier.ts"
+    "seed:dossier": "tsx scripts/seed-dossier.ts",
+    "test:contract": "tsx tests/formal-claims-contract.ts"
   },
   "dependencies": {
     "@ai-sdk/openai": "0.0.60",
