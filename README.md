@@ -20,7 +20,8 @@ A living scholarly archive of Gottfried Wilhelm Leibniz — transcribed, transla
 ## Core Features
 
 - **Discourse on Metaphysics**: Complete 37-section edition anchored to the Montgomery 1908 critical text.
-- **Monadology**: Complete 90-paragraph edition anchored to Latta 1898.
+- **Monadology**: Complete 90-paragraph edition anchored to Latta 1898 — with the French original aligned paragraph-by-paragraph for side-by-side bilingual reading.
+- **Corpus (38 works)**: the Theodicy (552 anchored sections including both appendices), the Duncan corpus of 32 shorter works (1679–1715), the Arnauld correspondence (23 letters), the Five Letters to Clarke, and the New Essays on Human Understanding (Preface + all 68 chapters, 69 anchored sections). Scanned-source works carry their OCR provenance in per-work editorial notes; correction passes are scheduled.
 - **Scholarly Guide**: Retrieval-augmented reader interface backed by vector search and source citations.
 - **Biographical & Lexicon Explorer**: Interactive contextual glossary of Leibnizian terminology.
 
