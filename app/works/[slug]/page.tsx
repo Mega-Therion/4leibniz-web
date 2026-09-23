@@ -8,7 +8,7 @@ import { getWork, getWorks, getThemes, getConcepts } from '@/lib/content';
 import type { Concept } from '@/lib/types';
 
 interface PageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 export async function generateStaticParams() {
@@ -17,7 +17,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const work = await getWork(params.slug);
+  const { slug } = await params;
+  const work = await getWork(slug);
   if (!work) return { title: 'Work not found' };
   const title = work.title;
   const description = work.summary.slice(0, 180);
@@ -34,7 +35,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function WorkPage({ params }: PageProps) {
-  const work = await getWork(params.slug);
+  const { slug } = await params;
+  const work = await getWork(slug);
   if (!work) notFound();
 
   const [themes, concepts, allWorks] = await Promise.all([

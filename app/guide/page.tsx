@@ -10,12 +10,13 @@ export const metadata: Metadata = {
 };
 
 interface PageProps {
-  searchParams: { work?: string; q?: string };
+  searchParams: Promise<{ work?: string; q?: string }>;
 }
 
 export default async function GuidePage({ searchParams }: PageProps) {
+  const { work: workParam, q } = await searchParams;
   const works = await getWorks();
-  const workSlug = searchParams.work ?? null;
+  const workSlug = workParam ?? null;
   const scopedWork = works.find((w) => w.slug === workSlug) ?? null;
 
   return (
@@ -35,7 +36,7 @@ export default async function GuidePage({ searchParams }: PageProps) {
       <GuidePanel
         workSlug={scopedWork?.slug ?? null}
         workTitle={scopedWork?.title ?? null}
-        initialInput={searchParams.q}
+        initialInput={q}
       />
 
       <p className="mt-s8 text-sm text-text3">
